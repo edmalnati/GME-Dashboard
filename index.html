@@ -97,6 +97,19 @@ body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monosp
 .tt select.acct-sel{width:140px;}
 .tt select.sym-sel{width:74px;}
 .del-btn{background:transparent;border:none;color:#f09595;cursor:pointer;font-size:14px;padding:0 2px;}
+ 
+/* Sync bar */
+.sync-bar{display:flex;align-items:center;gap:10px;background:#0e0e1a;border:0.5px solid #3a3a5c;border-radius:10px;padding:0.65rem 1.25rem;margin-bottom:1rem;flex-wrap:wrap;}
+.sync-label{font-size:11px;color:#8888aa;white-space:nowrap;}
+.sync-btn{font-size:12px;background:transparent;border:0.5px solid #3a3a5c;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit;}
+.sync-btn.export{color:#5dcaa5;border-color:#5dcaa5;}
+.sync-btn.export:hover{background:rgba(93,202,165,0.1);}
+.sync-btn.import{color:#5d8aca;border-color:#5d8aca;}
+.sync-btn.import:hover{background:rgba(93,138,202,0.1);}
+.sync-msg{font-size:11px;margin-left:auto;}
+.sync-msg.ok{color:#5dcaa5;}
+.sync-msg.err{color:#f09595;}
+#import-file{display:none;}
 .tranche-totals{display:flex;gap:10px;padding:0.75rem 1.25rem;background:#0e0e20;border-top:0.5px solid #2a2a4a;flex-wrap:wrap;}
 .tt-item{display:flex;flex-direction:column;gap:2px;}
 .tt-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.04em;}
@@ -224,6 +237,15 @@ body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monosp
     <div class="sc-card"><div class="sc-label">Combined remaining</div><div class="sc-val" id="sc-total-val">--</div><div class="sc-gain" id="sc-total-gain"></div></div>
     <div class="sc-card"><div class="sc-label">Unrealized P&amp;L (remaining)</div><div class="sc-val" id="sc-pnl">--</div><div class="sc-gain" id="sc-pnl-pct"></div></div>
   </div>
+</div>
+ 
+<!-- Sync bar -->
+<div class="sync-bar">
+  <div class="sync-label">sync between devices</div>
+  <button class="sync-btn export" onclick="exportTranches()">⬇ export tranches</button>
+  <button class="sync-btn import" onclick="document.getElementById('import-file').click()">⬆ import tranches</button>
+  <input type="file" id="import-file" accept=".json" onchange="importTranches(this)">
+  <div class="sync-msg" id="sync-msg"></div>
 </div>
  
 <!-- Tranche planner -->
@@ -533,6 +555,47 @@ function onPriceChange(){
   document.getElementById("sl-gme").value = Math.min(500,Math.max(10,Math.round(getGME())));
   document.getElementById("sl-ws").value  = Math.min(200,Math.max(0,getWS()));
   renderAll();
+}
+ 
+// ── Export / Import for cross-device sync ─────────────────────────────────────
+function exportTranches(){
+  const data = JSON.stringify(tranches, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  const date = new Date().toLocaleDateString("en-US",{month:"2-digit",day:"2-digit",year:"2-digit"}).replace(/\//g,"-");
+  a.href = url;
+  a.download = `gme_tranches_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showSyncMsg("exported ✓ — send this file to your other device", "ok");
+}
+ 
+function importTranches(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!Array.isArray(data)) throw new Error("invalid format");
+      tranches = data;
+      saveTranches();
+      renderAll();
+      showSyncMsg(`imported ${data.length} tranche${data.length===1?"":"s"} ✓`, "ok");
+    } catch(err){
+      showSyncMsg("import failed — invalid file", "err");
+    }
+    input.value = "";
+  };
+  reader.readAsText(file);
+}
+ 
+function showSyncMsg(msg, type){
+  const el = document.getElementById("sync-msg");
+  el.textContent = msg;
+  el.className = "sync-msg "+type;
+  setTimeout(()=>{ el.textContent=""; el.className="sync-msg"; }, 4000);
 }
  
 function renderAll(){
