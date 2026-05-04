@@ -6,25 +6,52 @@
 <title>GME & GMEWS Portfolio Dashboard</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monospace;font-size:14px;min-height:100vh;padding:1.5rem 1rem 3rem;}
-.container{max-width:780px;margin:0 auto;}
+body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monospace;font-size:14px;min-height:100vh;padding:1.5rem 1rem 4rem;}
+.container{max-width:820px;margin:0 auto;}
 .hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:6px;}
 .hdr-title{font-size:18px;font-weight:500;letter-spacing:0.04em;}
 .hdr-sub{font-size:12px;color:#8888aa;}
+ 
+/* Price bar */
 .price-input-bar{display:flex;align-items:center;gap:12px;background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;padding:0.85rem 1.25rem;margin-bottom:1rem;flex-wrap:wrap;}
-.pib-label{font-size:12px;color:#8888aa;white-space:nowrap;}
 .pib-group{display:flex;align-items:center;gap:8px;}
 .pib-symbol{font-size:13px;font-weight:500;color:#c0c0ee;}
+.pib-label{font-size:12px;color:#8888aa;}
 .price-field{background:#0e0e20;border:0.5px solid #4a4a6c;color:#e0e0ff;border-radius:6px;padding:5px 10px;font-size:16px;font-weight:500;width:90px;text-align:right;font-family:inherit;}
 .price-field:focus{outline:none;border-color:#5dcaa5;}
 .pib-divider{width:0.5px;height:28px;background:#3a3a5c;margin:0 4px;}
 .last-updated{font-size:11px;color:#666;margin-left:auto;}
+ 
+/* Top line */
 .top-bar{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
 .top-card{background:#1a1a2e;border:0.5px solid #3a3a5c;border-radius:12px;padding:1rem 1.25rem;}
 .tc-label{font-size:11px;color:#8888aa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
 .tc-val{font-size:24px;font-weight:500;color:#e0e0ff;}
 .tc-sub{font-size:12px;margin-top:4px;}
 .pos{color:#5dcaa5;} .neg{color:#f09595;}
+ 
+/* Milestone tracker */
+.milestone-section{background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.milestone-title{font-size:11px;color:#8888aa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;}
+.milestone-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.milestone-row:last-child{margin-bottom:0;}
+.m-label{font-size:12px;color:#c0c0ee;width:60px;text-align:right;white-space:nowrap;}
+.m-bar-wrap{flex:1;background:#0e0e20;border-radius:100px;height:10px;overflow:hidden;border:0.5px solid #2a2a4a;}
+.m-bar{height:100%;border-radius:100px;transition:width 0.4s ease;}
+.m-bar.t1{background:linear-gradient(90deg,#5dcaa5,#3aaa80);}
+.m-bar.t2{background:linear-gradient(90deg,#5d8aca,#3a6aaa);}
+.m-bar.t3{background:linear-gradient(90deg,#aa8a5d,#8a6a3a);}
+.m-bar.t4{background:linear-gradient(90deg,#ca5d8a,#aa3a6a);}
+.m-pct{font-size:11px;color:#8888aa;width:36px;text-align:right;}
+.m-status{font-size:11px;width:80px;text-align:right;}
+.m-status.done{color:#5dcaa5;font-weight:500;}
+.m-status.pending{color:#555;}
+.realized-summary{display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;}
+.rs-card{flex:1;min-width:140px;background:#0e0e20;border:0.5px solid #2a2a4a;border-radius:8px;padding:0.6rem 0.9rem;}
+.rs-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.rs-val{font-size:16px;font-weight:500;color:#e0e0ff;}
+ 
+/* Accounts */
 .section-title{font-size:11px;color:#8888aa;text-transform:uppercase;letter-spacing:0.07em;margin:1.5rem 0 0.75rem;}
 .owner-label{font-size:12px;font-weight:500;color:#7070cc;text-transform:uppercase;letter-spacing:0.08em;margin:1.25rem 0 0.6rem;padding-left:8px;border-left:2px solid #4a4aaa;display:block;}
 .acct-card{background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;overflow:hidden;margin-bottom:10px;}
@@ -37,6 +64,10 @@ body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monosp
 .at td{padding:7px 12px;text-align:right;color:#c0c0ee;border-bottom:0.5px solid #1a1a2e;}
 .at td:first-child{text-align:left;font-weight:500;color:#e0e0ff;}
 .at tr:last-child td{border-bottom:none;}
+.remaining-badge{display:inline-block;font-size:10px;color:#555;margin-left:6px;}
+.sold-out{color:#f09595 !important;text-decoration:line-through;opacity:0.5;}
+ 
+/* Scenario slider */
 .slider-section{background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
 .sl-row{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
 .sl-row label{font-size:12px;color:#8888aa;white-space:nowrap;width:90px;}
@@ -47,261 +78,472 @@ body{background:#0a0a18;color:#e0e0ff;font-family:'DM Mono','Courier New',monosp
 .sc-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
 .sc-val{font-size:17px;font-weight:500;color:#e0e0ff;}
 .sc-gain{font-size:12px;margin-top:2px;}
-.sales-section{background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;overflow:hidden;}
-.sh{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;border-bottom:0.5px solid #2a2a4a;}
-.sh-title{font-size:11px;color:#8888aa;text-transform:uppercase;letter-spacing:0.07em;}
-.add-btn{font-size:12px;background:transparent;border:0.5px solid #3a3a5c;color:#5dcaa5;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:inherit;}
+ 
+/* Tranche planner */
+.tranche-section{background:#12122a;border:0.5px solid #3a3a5c;border-radius:12px;overflow:hidden;margin-bottom:1rem;}
+.tranche-header{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;border-bottom:0.5px solid #2a2a4a;}
+.tranche-title{font-size:11px;color:#8888aa;text-transform:uppercase;letter-spacing:0.07em;}
+.add-btn{font-size:12px;background:transparent;border:0.5px solid #3a3a5c;color:#5dcaa5;border-radius:8px;padding:4px 12px;cursor:pointer;font-family:inherit;}
 .add-btn:hover{background:rgba(93,202,165,0.08);}
-.st{width:100%;border-collapse:collapse;font-size:12px;}
-.st th{padding:5px 10px;text-align:right;color:#555;font-weight:400;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:0.5px solid #1e1e3a;}
-.st th:first-child{text-align:left;}
-.st td{padding:6px 10px;text-align:right;color:#c0c0ee;border-bottom:0.5px solid #1a1a2e;}
-.st td:first-child{text-align:left;}
-.st tr:last-child td{border-bottom:none;}
-.st input,.st select{background:#0e0e20;border:0.5px solid #3a3a5c;color:#e0e0ff;border-radius:4px;padding:3px 6px;font-size:11px;font-family:inherit;}
-.st input{width:76px;} .st select{width:130px;}
-.del-btn{background:transparent;border:none;color:#f09595;cursor:pointer;font-size:14px;padding:0 4px;}
-.realized-bar{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.25rem;background:#0e0e20;border-top:0.5px solid #2a2a4a;}
-.realized-label{font-size:12px;color:#8888aa;}
-.realized-val{font-size:16px;font-weight:500;}
-@media(max-width:520px){
+.tt{width:100%;border-collapse:collapse;font-size:11px;}
+.tt th{padding:5px 8px;text-align:right;color:#555;font-weight:400;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;border-bottom:0.5px solid #1e1e3a;}
+.tt th:first-child{text-align:left;}
+.tt td{padding:5px 8px;text-align:right;color:#c0c0ee;border-bottom:0.5px solid #1a1a2e;}
+.tt td:first-child{text-align:left;}
+.tt tr:last-child td{border-bottom:none;}
+.tt input,.tt select{background:#0e0e20;border:0.5px solid #3a3a5c;color:#e0e0ff;border-radius:4px;padding:3px 5px;font-size:11px;font-family:inherit;}
+.tt input.wide{width:70px;}
+.tt input.narrow{width:56px;}
+.tt select.acct-sel{width:140px;}
+.tt select.sym-sel{width:74px;}
+.del-btn{background:transparent;border:none;color:#f09595;cursor:pointer;font-size:14px;padding:0 2px;}
+.tranche-totals{display:flex;gap:10px;padding:0.75rem 1.25rem;background:#0e0e20;border-top:0.5px solid #2a2a4a;flex-wrap:wrap;}
+.tt-item{display:flex;flex-direction:column;gap:2px;}
+.tt-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.04em;}
+.tt-val{font-size:14px;font-weight:500;}
+ 
+@media(max-width:540px){
   .top-bar{grid-template-columns:1fr;}
   .sc-grid{grid-template-columns:1fr;}
   .tc-val{font-size:20px;}
   .at{font-size:11px;}
   .at th,.at td{padding:5px 8px;}
   body{padding:1rem 0.75rem 3rem;}
+  .realized-summary{flex-direction:column;}
 }
 </style>
 </head>
 <body>
 <div class="container">
-
-  <div class="hdr">
-    <div class="hdr-title">GME · GMEWS</div>
-    <div class="hdr-sub">Eric & Ivana · portfolio dashboard</div>
+ 
+<div class="hdr">
+  <div class="hdr-title">GME · GMEWS</div>
+  <div class="hdr-sub">Eric & Ivana · portfolio dashboard</div>
+</div>
+ 
+<!-- Price inputs -->
+<div class="price-input-bar">
+  <div class="pib-group">
+    <div class="pib-symbol">GME</div>
+    <div class="pib-label">$</div>
+    <!-- UPDATE DEFAULT: change value="24.55" to today's GME price -->
+    <input class="price-field" id="gme-input" type="number" step="0.01" min="0" value="24.55" oninput="onPriceChange()">
   </div>
-
-  <div class="price-input-bar">
-    <div class="pib-group">
-      <div class="pib-symbol">GME</div>
-      <div class="pib-label">$</div>
-      <!-- TO UPDATE DEFAULT PRICE: change the value="24.55" below to today's GME price -->
-      <input class="price-field" id="gme-input" type="number" step="0.01" min="0" value="25.10" oninput="onPriceChange()">
-    </div>
-    <div class="pib-divider"></div>
-    <div class="pib-group">
-      <div class="pib-symbol">GMEWS</div>
-      <div class="pib-label">$</div>
-      <!-- TO UPDATE DEFAULT PRICE: change the value="3.61" below to today's GMEWS price -->
-      <input class="price-field" id="ws-input" type="number" step="0.01" min="0" value="3.65" oninput="onPriceChange()">
-    </div>
-    <div class="last-updated" id="last-updated">update prices above · everything recalculates instantly</div>
+  <div class="pib-divider"></div>
+  <div class="pib-group">
+    <div class="pib-symbol">GMEWS</div>
+    <div class="pib-label">$</div>
+    <!-- UPDATE DEFAULT: change value="3.61" to today's GMEWS price -->
+    <input class="price-field" id="ws-input" type="number" step="0.01" min="0" value="3.61" oninput="onPriceChange()">
   </div>
-
-  <div class="top-bar">
-    <div class="top-card">
-      <div class="tc-label">Total GME value</div>
-      <div class="tc-val" id="total-gme-val">--</div>
-      <div class="tc-sub" id="total-gme-sub"></div>
+  <div class="last-updated" id="last-updated">update prices above · everything recalculates instantly</div>
+</div>
+ 
+<!-- Top line totals -->
+<div class="top-bar">
+  <div class="top-card">
+    <div class="tc-label">Total GME value (remaining)</div>
+    <div class="tc-val" id="total-gme-val">--</div>
+    <div class="tc-sub" id="total-gme-sub"></div>
+  </div>
+  <div class="top-card">
+    <div class="tc-label">Total GMEWS value (remaining)</div>
+    <div class="tc-val" id="total-ws-val">--</div>
+    <div class="tc-sub" id="total-ws-sub"></div>
+  </div>
+</div>
+ 
+<!-- Milestone tracker -->
+<div class="section-title">Sell-off progress</div>
+<div class="milestone-section">
+  <div class="milestone-title">Realized profit milestones</div>
+  <div class="milestone-row">
+    <div class="m-label">$100k</div>
+    <div class="m-bar-wrap"><div class="m-bar t1" id="bar1" style="width:0%"></div></div>
+    <div class="m-pct" id="pct1">0%</div>
+    <div class="m-status pending" id="ms1">pending</div>
+  </div>
+  <div class="milestone-row">
+    <div class="m-label">$150k</div>
+    <div class="m-bar-wrap"><div class="m-bar t2" id="bar2" style="width:0%"></div></div>
+    <div class="m-pct" id="pct2">0%</div>
+    <div class="m-status pending" id="ms2">pending</div>
+  </div>
+  <div class="milestone-row">
+    <div class="m-label">$200k</div>
+    <div class="m-bar-wrap"><div class="m-bar t3" id="bar3" style="width:0%"></div></div>
+    <div class="m-pct" id="pct3">0%</div>
+    <div class="m-status pending" id="ms3">pending</div>
+  </div>
+  <div class="milestone-row">
+    <div class="m-label">$300k</div>
+    <div class="m-bar-wrap"><div class="m-bar t4" id="bar4" style="width:0%"></div></div>
+    <div class="m-pct" id="pct4">0%</div>
+    <div class="m-status pending" id="ms4">pending</div>
+  </div>
+  <div class="realized-summary">
+    <div class="rs-card">
+      <div class="rs-label">Total gross proceeds</div>
+      <div class="rs-val" id="rs-proceeds">$0.00</div>
     </div>
-    <div class="top-card">
-      <div class="tc-label">Total GMEWS value</div>
-      <div class="tc-val" id="total-ws-val">--</div>
-      <div class="tc-sub" id="total-ws-sub"></div>
+    <div class="rs-card">
+      <div class="rs-label">Total realized profit</div>
+      <div class="rs-val pos" id="rs-profit">$0.00</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-label">GME shares sold</div>
+      <div class="rs-val" id="rs-gme-sold">0</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-label">GMEWS warrants sold</div>
+      <div class="rs-val" id="rs-ws-sold">0</div>
     </div>
   </div>
-
-  <div class="section-title">Positions by account</div>
-  <div id="accounts-grid"></div>
-
-  <div class="section-title">What-if price scenario</div>
-  <div class="slider-section">
-    <div class="sl-row">
-      <label>GME price</label>
-      <input type="range" id="sl-gme" min="10" max="500" step="1" value="25" oninput="renderScenario()">
-      <div class="sl-val">$<span id="sl-gme-out">25</span></div>
-    </div>
-    <div class="sl-row">
-      <label>GMEWS price</label>
-      <input type="range" id="sl-ws" min="0" max="200" step="0.1" value="3.61" oninput="renderScenario()">
-      <div class="sl-val">$<span id="sl-ws-out">3.61</span></div>
-    </div>
-    <div class="sc-grid">
-      <div class="sc-card"><div class="sc-label">GME total value</div><div class="sc-val" id="sc-gme-val">--</div><div class="sc-gain" id="sc-gme-gain"></div></div>
-      <div class="sc-card"><div class="sc-label">GMEWS total value</div><div class="sc-val" id="sc-ws-val">--</div><div class="sc-gain" id="sc-ws-gain"></div></div>
-      <div class="sc-card"><div class="sc-label">Combined value</div><div class="sc-val" id="sc-total-val">--</div><div class="sc-gain" id="sc-total-gain"></div></div>
-      <div class="sc-card"><div class="sc-label">Unrealized P&amp;L</div><div class="sc-val" id="sc-pnl">--</div><div class="sc-gain" id="sc-pnl-pct"></div></div>
-    </div>
+</div>
+ 
+<!-- Accounts -->
+<div class="section-title">Remaining positions by account</div>
+<div id="accounts-grid"></div>
+ 
+<!-- What-if slider -->
+<div class="section-title">What-if price scenario</div>
+<div class="slider-section">
+  <div class="sl-row">
+    <label>GME price</label>
+    <input type="range" id="sl-gme" min="10" max="500" step="1" value="25" oninput="renderScenario()">
+    <div class="sl-val">$<span id="sl-gme-out">25</span></div>
   </div>
-
-  <div class="section-title">Sale log</div>
-  <div class="sales-section">
-    <div class="sh">
-      <div class="sh-title">Realized gains tracker</div>
-      <button class="add-btn" onclick="addSaleRow()">+ add sale</button>
-    </div>
-    <table class="st">
-      <thead><tr><th>date</th><th>account</th><th>symbol</th><th>qty</th><th>sale price</th><th>avg basis</th><th>revenue</th><th>profit</th><th></th></tr></thead>
-      <tbody id="sales-body"></tbody>
-    </table>
-    <div class="realized-bar">
-      <div class="realized-label">Total realized profit</div>
-      <div class="realized-val" id="realized-total">$0.00</div>
-    </div>
+  <div class="sl-row">
+    <label>GMEWS price</label>
+    <input type="range" id="sl-ws" min="0" max="200" step="0.1" value="3.61" oninput="renderScenario()">
+    <div class="sl-val">$<span id="sl-ws-out">3.61</span></div>
   </div>
-
+  <div class="sc-grid">
+    <div class="sc-card"><div class="sc-label">GME remaining value</div><div class="sc-val" id="sc-gme-val">--</div><div class="sc-gain" id="sc-gme-gain"></div></div>
+    <div class="sc-card"><div class="sc-label">GMEWS remaining value</div><div class="sc-val" id="sc-ws-val">--</div><div class="sc-gain" id="sc-ws-gain"></div></div>
+    <div class="sc-card"><div class="sc-label">Combined remaining</div><div class="sc-val" id="sc-total-val">--</div><div class="sc-gain" id="sc-total-gain"></div></div>
+    <div class="sc-card"><div class="sc-label">Unrealized P&amp;L (remaining)</div><div class="sc-val" id="sc-pnl">--</div><div class="sc-gain" id="sc-pnl-pct"></div></div>
+  </div>
+</div>
+ 
+<!-- Tranche planner -->
+<div class="section-title">Sell-off tranche planner</div>
+<div class="tranche-section">
+  <div class="tranche-header">
+    <div class="tranche-title">Log each tranche · auto-deducts from account</div>
+    <button class="add-btn" onclick="addTranche()">+ add tranche</button>
+  </div>
+  <table class="tt">
+    <thead>
+      <tr>
+        <th>date</th>
+        <th>account</th>
+        <th>symbol</th>
+        <th>qty sold</th>
+        <th>sale price</th>
+        <th>avg basis</th>
+        <th>gross proceeds</th>
+        <th>realized profit</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tranche-body"></tbody>
+  </table>
+  <div class="tranche-totals">
+    <div class="tt-item"><div class="tt-label">gross proceeds</div><div class="tt-val" id="tt-proceeds">$0.00</div></div>
+    <div class="tt-item"><div class="tt-label">realized profit</div><div class="tt-val pos" id="tt-profit">$0.00</div></div>
+    <div class="tt-item"><div class="tt-label">GME sold</div><div class="tt-val" id="tt-gme">0 shares</div></div>
+    <div class="tt-item"><div class="tt-label">GMEWS sold</div><div class="tt-val" id="tt-ws">0 warrants</div></div>
+  </div>
+</div>
+ 
 </div>
 <script>
-const POSITIONS=[
-  {owner:"Eric",  account:"Cash Account", symbol:"GME",   qty:830,  avgBasis:24.22, costTotal:20102.95},
-  {owner:"Eric",  account:"Cash Account", symbol:"GMEWS", qty:210,  avgBasis:3.12,  costTotal:655.18},
-  {owner:"Eric",  account:"Roth IRA",     symbol:"GME",   qty:1000, avgBasis:24.55, costTotal:24545.69},
-  {owner:"Eric",  account:"Roth IRA",     symbol:"GMEWS", qty:2050, avgBasis:3.28,  costTotal:6724.82},
-  {owner:"Eric",  account:"Rollover IRA", symbol:"GME",   qty:1210, avgBasis:22.89, costTotal:27700.45},
-  {owner:"Eric",  account:"Rollover IRA", symbol:"GMEWS", qty:2930, avgBasis:3.61,  costTotal:10576.63},
-  {owner:"Eric",  account:"HSA",          symbol:"GME",   qty:46,   avgBasis:31.47, costTotal:1447.70},
-  {owner:"Eric",  account:"HSA",          symbol:"GMEWS", qty:4,    avgBasis:0.00,  costTotal:0.00},
-  {owner:"Ivana", account:"Rollover IRA", symbol:"GME",   qty:2350, avgBasis:23.51, costTotal:55254.06},
-  {owner:"Ivana", account:"Rollover IRA", symbol:"GMEWS", qty:1100, avgBasis:2.49,  costTotal:2739.00},
-  {owner:"Ivana", account:"Roth IRA",     symbol:"GME",   qty:267,  avgBasis:31.65, costTotal:8450.55},
-  {owner:"Ivana", account:"Roth IRA",     symbol:"GMEWS", qty:26,   avgBasis:0.00,  costTotal:0.00},
-  {owner:"Computershare", account:"Computershare", symbol:"GME",   qty:420, avgBasis:null, costTotal:null},
-  {owner:"Computershare", account:"Computershare", symbol:"GMEWS", qty:42,  avgBasis:null, costTotal:null},
+// ── Base positions ─────────────────────────────────────────────────────────────
+const BASE = [
+  {owner:"Eric",         account:"Cash Account", symbol:"GME",   qty:830,  avgBasis:24.22, costTotal:20102.95},
+  {owner:"Eric",         account:"Cash Account", symbol:"GMEWS", qty:581,  avgBasis:3.12,  costTotal:1811.18},
+  {owner:"Eric",         account:"Roth IRA",     symbol:"GME",   qty:1000, avgBasis:24.55, costTotal:24545.69},
+  {owner:"Eric",         account:"Roth IRA",     symbol:"GMEWS", qty:2050, avgBasis:3.28,  costTotal:6724.82},
+  {owner:"Eric",         account:"Rollover IRA", symbol:"GME",   qty:1210, avgBasis:22.89, costTotal:27700.45},
+  {owner:"Eric",         account:"Rollover IRA", symbol:"GMEWS", qty:3930, avgBasis:3.61,  costTotal:14196.63},
+  {owner:"Eric",         account:"HSA",          symbol:"GME",   qty:46,   avgBasis:31.47, costTotal:1447.70},
+  {owner:"Eric",         account:"HSA",          symbol:"GMEWS", qty:4,    avgBasis:0.00,  costTotal:0.00},
+  {owner:"Ivana",        account:"Rollover IRA", symbol:"GME",   qty:2350, avgBasis:23.51, costTotal:55254.06},
+  {owner:"Ivana",        account:"Rollover IRA", symbol:"GMEWS", qty:1100, avgBasis:2.49,  costTotal:2739.00},
+  {owner:"Ivana",        account:"Roth IRA",     symbol:"GME",   qty:267,  avgBasis:31.65, costTotal:8450.55},
+  {owner:"Ivana",        account:"Roth IRA",     symbol:"GMEWS", qty:26,   avgBasis:0.00,  costTotal:0.00},
+  {owner:"Computershare",account:"Computershare",symbol:"GME",   qty:420,  avgBasis:null,  costTotal:null},
+  {owner:"Computershare",account:"Computershare",symbol:"GMEWS", qty:42,   avgBasis:null,  costTotal:null},
 ];
-
-const COST_GME=POSITIONS.filter(p=>p.symbol==="GME"&&p.costTotal).reduce((s,p)=>s+p.costTotal,0);
-const COST_WS =POSITIONS.filter(p=>p.symbol==="GMEWS"&&p.costTotal).reduce((s,p)=>s+p.costTotal,0);
-const QTY_GME =POSITIONS.filter(p=>p.symbol==="GME").reduce((s,p)=>s+p.qty,0);
-const QTY_WS  =POSITIONS.filter(p=>p.symbol==="GMEWS").reduce((s,p)=>s+p.qty,0);
-
-let sales=JSON.parse(localStorage.getItem("gme_sales_v3")||"[]");
-
-function fmt(n){return"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
-function gc(v){return v>=0?"pos":"neg";}
-function gs(v){return v>=0?"+":"";}
-function pct(v,t){return t>0?((v/t)*100).toFixed(2)+"%":"n/a";}
-function getGME(){return parseFloat(document.getElementById("gme-input").value)||0;}
-function getWS(){return parseFloat(document.getElementById("ws-input").value)||0;}
-
-function onPriceChange(){
-  const now=new Date();
-  document.getElementById("last-updated").textContent="last updated "+now.toLocaleDateString("en-US",{month:"short",day:"numeric"})+" at "+now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-  document.getElementById("sl-gme").value=Math.min(500,Math.max(10,Math.round(getGME())));
-  document.getElementById("sl-ws").value=Math.min(200,Math.max(0,getWS()));
-  renderAll();
+ 
+const ACCOUNT_OPTIONS = [
+  "Eric — Cash Account",
+  "Eric — Roth IRA",
+  "Eric — Rollover IRA",
+  "Eric — HSA",
+  "Ivana — Rollover IRA",
+  "Ivana — Roth IRA",
+  "Computershare"
+];
+ 
+// Map account option label → BASE owner+account key
+function parseAcctLabel(label){
+  const parts = label.split(" — ");
+  return {owner: parts[0], account: parts[1]};
 }
-
+ 
+const MILESTONES = [100000, 150000, 200000, 300000];
+ 
+let tranches = JSON.parse(localStorage.getItem("gme_tranches_v4") || "[]");
+ 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmt(n){ return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function gc(v){ return v>=0?"pos":"neg"; }
+function gs(v){ return v>=0?"+":""; }
+function pct(v,t){ return t>0?((v/t)*100).toFixed(2)+"%":"n/a"; }
+function getGME(){ return parseFloat(document.getElementById("gme-input").value)||0; }
+function getWS(){ return parseFloat(document.getElementById("ws-input").value)||0; }
+ 
+// ── Compute remaining positions after tranches ────────────────────────────────
+function getRemainingPositions(){
+  // Deep copy base
+  const remaining = BASE.map(p => ({...p, remaining: p.qty}));
+ 
+  tranches.forEach(t => {
+    if(!t.acct || !t.sym || !t.qty) return;
+    const {owner, account} = parseAcctLabel(t.acct);
+    const pos = remaining.find(p => p.owner===owner && p.account===account && p.symbol===t.sym);
+    if(pos){
+      pos.remaining = Math.max(0, pos.remaining - (parseFloat(t.qty)||0));
+    }
+  });
+  return remaining;
+}
+ 
+// ── Tranche aggregates ────────────────────────────────────────────────────────
+function getTrancheTotals(){
+  let proceeds=0, profit=0, gmeSold=0, wsSold=0;
+  tranches.forEach(t => {
+    const qty = parseFloat(t.qty)||0;
+    const price = parseFloat(t.price)||0;
+    const basis = parseFloat(t.basis)||0;
+    const rev = qty * price;
+    const prof = rev - (qty * basis);
+    proceeds += rev;
+    profit += prof;
+    if(t.sym==="GME") gmeSold += qty;
+    if(t.sym==="GMEWS") wsSold += qty;
+  });
+  return {proceeds, profit, gmeSold, wsSold};
+}
+ 
+// ── Render top line ───────────────────────────────────────────────────────────
 function renderTopLine(){
-  const gp=getGME(),wp=getWS();
-  const gv=QTY_GME*gp,wv=QTY_WS*wp;
-  const ggl=gv-COST_GME,wgl=wv-COST_WS;
-  document.getElementById("total-gme-val").textContent=fmt(gv);
+  const gp=getGME(), wp=getWS();
+  const rem = getRemainingPositions();
+  const remGME = rem.filter(p=>p.symbol==="GME");
+  const remWS  = rem.filter(p=>p.symbol==="GMEWS");
+  const totalRemQtyGME = remGME.reduce((s,p)=>s+p.remaining,0);
+  const totalRemQtyWS  = remWS.reduce((s,p)=>s+p.remaining,0);
+  const gmeVal = totalRemQtyGME * gp;
+  const wsVal  = totalRemQtyWS  * wp;
+  // cost of remaining shares (proportional)
+  const gmeCostRem = remGME.reduce((s,p)=>s+(p.costTotal!=null?(p.remaining/p.qty)*p.costTotal:0),0);
+  const wsCostRem  = remWS.reduce((s,p)=>s+(p.costTotal!=null?(p.remaining/p.qty)*p.costTotal:0),0);
+  const gmeGL = gmeVal - gmeCostRem;
+  const wsGL  = wsVal  - wsCostRem;
+ 
+  document.getElementById("total-gme-val").textContent = fmt(gmeVal);
   const gs1=document.getElementById("total-gme-sub");
-  gs1.textContent=QTY_GME.toLocaleString()+" shares · "+gs(ggl)+fmt(ggl)+" ("+gs(ggl)+pct(ggl,COST_GME)+")";
-  gs1.className="tc-sub "+(ggl>=0?"pos":"neg");
-  document.getElementById("total-ws-val").textContent=fmt(wv);
+  gs1.textContent = totalRemQtyGME.toLocaleString()+" shares remaining · "+gs(gmeGL)+fmt(gmeGL)+" ("+gs(gmeGL)+pct(gmeGL,gmeCostRem)+")";
+  gs1.className = "tc-sub "+(gmeGL>=0?"pos":"neg");
+ 
+  document.getElementById("total-ws-val").textContent = fmt(wsVal);
   const ws1=document.getElementById("total-ws-sub");
-  ws1.textContent=QTY_WS.toLocaleString()+" warrants · "+gs(wgl)+fmt(wgl)+" ("+gs(wgl)+pct(wgl,COST_WS)+")";
-  ws1.className="tc-sub "+(wgl>=0?"pos":"neg");
+  ws1.textContent = totalRemQtyWS.toLocaleString()+" warrants remaining · "+gs(wsGL)+fmt(wsGL)+" ("+gs(wsGL)+pct(wsGL,wsCostRem)+")";
+  ws1.className = "tc-sub "+(wsGL>=0?"pos":"neg");
 }
-
+ 
+// ── Render milestones ─────────────────────────────────────────────────────────
+function renderMilestones(){
+  const {proceeds, profit, gmeSold, wsSold} = getTrancheTotals();
+  MILESTONES.forEach((target, i) => {
+    const n = i+1;
+    const p = Math.min(100, (profit/target)*100);
+    document.getElementById(`bar${n}`).style.width = p.toFixed(1)+"%";
+    document.getElementById(`pct${n}`).textContent = p.toFixed(0)+"%";
+    const ms = document.getElementById(`ms${n}`);
+    if(profit >= target){ ms.textContent="✓ hit"; ms.className="m-status done"; }
+    else { ms.textContent=fmt(target-profit)+" left"; ms.className="m-status pending"; }
+  });
+  document.getElementById("rs-proceeds").textContent = fmt(proceeds);
+  const rp = document.getElementById("rs-profit");
+  rp.textContent = fmt(profit);
+  rp.className = "rs-val "+(profit>=0?"pos":"neg");
+  document.getElementById("rs-gme-sold").textContent = gmeSold.toLocaleString();
+  document.getElementById("rs-ws-sold").textContent  = wsSold.toLocaleString();
+}
+ 
+// ── Render accounts ───────────────────────────────────────────────────────────
 function renderAccounts(){
-  const gp=getGME(),wp=getWS();
-  const grid=document.getElementById("accounts-grid");
-  grid.innerHTML="";
-  const owners=["Eric","Ivana","Computershare"];
-  owners.forEach(owner=>{
-    const ownerPositions=POSITIONS.filter(p=>p.owner===owner);
-    if(!ownerPositions.length) return;
-
-    const ownerLabel=document.createElement("div");
-    ownerLabel.className="owner-label";
-    ownerLabel.textContent=owner==="Computershare"?"Computershare":owner+"'s accounts";
+  const gp=getGME(), wp=getWS();
+  const rem = getRemainingPositions();
+  const grid = document.getElementById("accounts-grid");
+  grid.innerHTML = "";
+  const owners = ["Eric","Ivana","Computershare"];
+  owners.forEach(owner => {
+    const ownerPos = rem.filter(p=>p.owner===owner);
+    if(!ownerPos.length) return;
+    const ownerLabel = document.createElement("div");
+    ownerLabel.className = "owner-label";
+    ownerLabel.textContent = owner==="Computershare" ? "Computershare" : owner+"'s accounts";
     grid.appendChild(ownerLabel);
-
-    const accounts=[...new Set(ownerPositions.map(p=>p.account))];
-    accounts.forEach(acct=>{
-      const rows=ownerPositions.filter(p=>p.account===acct);
-      const tot=rows.reduce((s,p)=>s+p.qty*(p.symbol==="GME"?gp:wp),0);
-      const card=document.createElement("div");
-      card.className="acct-card";
-      let html=`<div class="acct-header"><div class="acct-name">${acct}</div><div class="acct-total">${fmt(tot)}</div></div>
-      <table class="at"><thead><tr><th>symbol</th><th>qty</th><th>current value</th><th>avg basis</th><th>gain $</th><th>gain %</th></tr></thead><tbody>`;
-      rows.forEach(p=>{
-        const px=p.symbol==="GME"?gp:wp;
-        const cv=p.qty*px;
-        const gl=p.costTotal!=null?cv-p.costTotal:null;
-        const glp=p.costTotal!=null&&p.costTotal>0?gl/p.costTotal*100:null;
-        html+=`<tr>
-          <td>${p.symbol}</td><td>${p.qty.toLocaleString()}</td><td>${fmt(cv)}</td>
+    const accounts = [...new Set(ownerPos.map(p=>p.account))];
+    accounts.forEach(acct => {
+      const rows = ownerPos.filter(p=>p.account===acct);
+      const tot = rows.reduce((s,p)=>s+p.remaining*(p.symbol==="GME"?gp:wp),0);
+      const card = document.createElement("div");
+      card.className = "acct-card";
+      let html = `<div class="acct-header"><div class="acct-name">${acct}</div><div class="acct-total">${fmt(tot)}</div></div>
+      <table class="at"><thead><tr><th>symbol</th><th>original</th><th>sold</th><th>remaining</th><th>current value</th><th>avg basis</th><th>gain $</th><th>gain %</th></tr></thead><tbody>`;
+      rows.forEach(p => {
+        const px = p.symbol==="GME"?gp:wp;
+        const sold = p.qty - p.remaining;
+        const cv = p.remaining * px;
+        const costRem = p.costTotal!=null ? (p.remaining/p.qty)*p.costTotal : null;
+        const gl  = costRem!=null ? cv-costRem : null;
+        const glp = costRem!=null&&costRem>0 ? gl/costRem*100 : null;
+        const remClass = p.remaining===0 ? "sold-out" : "";
+        html += `<tr>
+          <td class="${remClass}">${p.symbol}</td>
+          <td>${p.qty.toLocaleString()}</td>
+          <td>${sold>0?'<span class="neg">-'+sold.toLocaleString()+'</span>':'-'}</td>
+          <td><strong>${p.remaining.toLocaleString()}</strong></td>
+          <td>${fmt(cv)}</td>
           <td>${p.avgBasis!=null?"$"+p.avgBasis.toFixed(2):"—"}</td>
           <td>${gl!=null?`<span class="${gc(gl)}">${gs(gl)}${fmt(gl)}</span>`:"—"}</td>
           <td>${glp!=null?`<span class="${gc(glp)}">${gs(glp)}${glp.toFixed(2)}%</span>`:"—"}</td>
         </tr>`;
       });
-      html+=`</tbody></table>`;
-      card.innerHTML=html;
+      html += `</tbody></table>`;
+      card.innerHTML = html;
       grid.appendChild(card);
     });
   });
 }
-
+ 
+// ── Render scenario ───────────────────────────────────────────────────────────
 function renderScenario(){
   const gp=parseFloat(document.getElementById("sl-gme").value);
   const wp=parseFloat(document.getElementById("sl-ws").value);
-  document.getElementById("sl-gme-out").textContent=gp.toFixed(0);
-  document.getElementById("sl-ws-out").textContent=wp.toFixed(2);
-  const gv=QTY_GME*gp,wv=QTY_WS*wp,tot=gv+wv;
-  const tc=COST_GME+COST_WS,pnl=tot-tc;
-  const ggl=gv-COST_GME,wgl=wv-COST_WS;
-  document.getElementById("sc-gme-val").textContent=fmt(gv);
-  document.getElementById("sc-gme-gain").innerHTML=`<span class="${gc(ggl)}">${gs(ggl)}${fmt(ggl)}</span>`;
-  document.getElementById("sc-ws-val").textContent=fmt(wv);
-  document.getElementById("sc-ws-gain").innerHTML=`<span class="${gc(wgl)}">${gs(wgl)}${fmt(wgl)}</span>`;
-  document.getElementById("sc-total-val").textContent=fmt(tot);
-  document.getElementById("sc-total-gain").innerHTML=`<span class="${gc(pnl)}">${gs(pnl)}${fmt(pnl)}</span>`;
+  document.getElementById("sl-gme-out").textContent = gp.toFixed(0);
+  document.getElementById("sl-ws-out").textContent  = wp.toFixed(2);
+  const rem = getRemainingPositions();
+  const remQtyGME = rem.filter(p=>p.symbol==="GME").reduce((s,p)=>s+p.remaining,0);
+  const remQtyWS  = rem.filter(p=>p.symbol==="GMEWS").reduce((s,p)=>s+p.remaining,0);
+  const gmeCostRem = rem.filter(p=>p.symbol==="GME").reduce((s,p)=>s+(p.costTotal!=null?(p.remaining/p.qty)*p.costTotal:0),0);
+  const wsCostRem  = rem.filter(p=>p.symbol==="GMEWS").reduce((s,p)=>s+(p.costTotal!=null?(p.remaining/p.qty)*p.costTotal:0),0);
+  const gv=remQtyGME*gp, wv=remQtyWS*wp, tot=gv+wv;
+  const tc=gmeCostRem+wsCostRem, pnl=tot-tc;
+  const ggl=gv-gmeCostRem, wgl=wv-wsCostRem;
+  document.getElementById("sc-gme-val").textContent = fmt(gv);
+  document.getElementById("sc-gme-gain").innerHTML = `<span class="${gc(ggl)}">${gs(ggl)}${fmt(ggl)}</span>`;
+  document.getElementById("sc-ws-val").textContent = fmt(wv);
+  document.getElementById("sc-ws-gain").innerHTML = `<span class="${gc(wgl)}">${gs(wgl)}${fmt(wgl)}</span>`;
+  document.getElementById("sc-total-val").textContent = fmt(tot);
+  document.getElementById("sc-total-gain").innerHTML = `<span class="${gc(pnl)}">${gs(pnl)}${fmt(pnl)}</span>`;
   const pe=document.getElementById("sc-pnl");
-  pe.textContent=fmt(Math.abs(pnl));
-  pe.className="sc-val "+(pnl>=0?"pos":"neg");
-  document.getElementById("sc-pnl-pct").innerHTML=`<span class="${gc(pnl)}">${gs(pnl)}${(pnl/tc*100).toFixed(2)}%</span>`;
+  pe.textContent = fmt(Math.abs(pnl));
+  pe.className = "sc-val "+(pnl>=0?"pos":"neg");
+  document.getElementById("sc-pnl-pct").innerHTML = tc>0?`<span class="${gc(pnl)}">${gs(pnl)}${(pnl/tc*100).toFixed(2)}%</span>`:"—";
 }
-
-function saveSales(){localStorage.setItem("gme_sales_v3",JSON.stringify(sales));}
-function renderSales(){
-  const tbody=document.getElementById("sales-body");
-  if(sales.length===0){
-    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#444;padding:16px;font-size:12px;">no sales logged yet</td></tr>`;
-    const rv=document.getElementById("realized-total");rv.textContent="$0.00";rv.className="realized-val pos";return;
+ 
+// ── Render tranches ───────────────────────────────────────────────────────────
+function saveTranches(){ localStorage.setItem("gme_tranches_v4", JSON.stringify(tranches)); }
+ 
+function renderTranches(){
+  const tbody = document.getElementById("tranche-body");
+  if(tranches.length===0){
+    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#444;padding:16px;font-size:12px;">no tranches logged yet · click + add tranche to begin</td></tr>`;
+  } else {
+    tbody.innerHTML="";
+    tranches.forEach((t,i) => {
+      const qty   = parseFloat(t.qty)||0;
+      const price = parseFloat(t.price)||0;
+      const basis = parseFloat(t.basis)||0;
+      const proceeds = qty * price;
+      const profit   = proceeds - (qty * basis);
+      const acctOpts = ACCOUNT_OPTIONS.map(a=>`<option ${t.acct===a?"selected":""}>${a}</option>`).join("");
+      const tr = document.createElement("tr");
+      tr.innerHTML=`
+        <td><input class="wide" value="${t.date}" onchange="tranches[${i}].date=this.value;saveTranches()"></td>
+        <td><select class="acct-sel" onchange="tranches[${i}].acct=this.value;saveTranches();renderAll()">${acctOpts}</select></td>
+        <td><select class="sym-sel" onchange="tranches[${i}].sym=this.value;tranches[${i}].basis=getDefaultBasis(this.value,tranches[${i}].acct);saveTranches();renderAll()">
+          <option ${t.sym==="GME"?"selected":""}>GME</option>
+          <option ${t.sym==="GMEWS"?"selected":""}>GMEWS</option>
+        </select></td>
+        <td><input class="narrow" type="number" value="${t.qty}" onchange="tranches[${i}].qty=this.value;saveTranches();renderAll()"></td>
+        <td><input class="narrow" type="number" step="0.01" value="${t.price}" onchange="tranches[${i}].price=this.value;saveTranches();renderAll()"></td>
+        <td><input class="narrow" type="number" step="0.01" value="${t.basis}" onchange="tranches[${i}].basis=this.value;saveTranches();renderAll()"></td>
+        <td>${fmt(proceeds)}</td>
+        <td><span class="${gc(profit)}">${gs(profit)}${fmt(profit)}</span></td>
+        <td><button class="del-btn" onclick="tranches.splice(${i},1);saveTranches();renderAll()">×</button></td>`;
+      tbody.appendChild(tr);
+    });
   }
-  tbody.innerHTML="";let tp=0;
-  const acctOptions=["Eric — Cash Account","Eric — Roth IRA","Eric — Rollover IRA","Eric — HSA","Ivana — Rollover IRA","Ivana — Roth IRA","Computershare"];
-  sales.forEach((s,i)=>{
-    const rev=s.qty*s.price,basis=s.basis*s.qty,profit=rev-basis;tp+=profit;
-    const opts=acctOptions.map(a=>`<option ${s.acct===a?"selected":""}>${a}</option>`).join("");
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td><input value="${s.date}" style="width:82px" onchange="sales[${i}].date=this.value;saveSales()"></td>
-      <td><select style="width:150px" onchange="sales[${i}].acct=this.value;saveSales()">${opts}</select></td>
-      <td><select style="width:80px" onchange="sales[${i}].sym=this.value;saveSales()"><option ${s.sym==="GME"?"selected":""}>GME</option><option ${s.sym==="GMEWS"?"selected":""}>GMEWS</option></select></td>
-      <td><input type="number" value="${s.qty}" style="width:56px" onchange="sales[${i}].qty=parseFloat(this.value)||0;saveSales();renderSales()"></td>
-      <td><input type="number" value="${s.price}" step="0.01" style="width:64px" onchange="sales[${i}].price=parseFloat(this.value)||0;saveSales();renderSales()"></td>
-      <td><input type="number" value="${s.basis}" step="0.01" style="width:64px" onchange="sales[${i}].basis=parseFloat(this.value)||0;saveSales();renderSales()"></td>
-      <td>${fmt(rev)}</td>
-      <td><span class="${gc(profit)}">${gs(profit)}${fmt(profit)}</span></td>
-      <td><button class="del-btn" onclick="sales.splice(${i},1);saveSales();renderSales()">×</button></td>`;
-    tbody.appendChild(tr);
+ 
+  // Totals bar
+  const {proceeds, profit, gmeSold, wsSold} = getTrancheTotals();
+  document.getElementById("tt-proceeds").textContent = fmt(proceeds);
+  const tp = document.getElementById("tt-profit");
+  tp.textContent = fmt(profit);
+  tp.className = "tt-val "+(profit>=0?"pos":"neg");
+  document.getElementById("tt-gme").textContent = gmeSold.toLocaleString()+" shares";
+  document.getElementById("tt-ws").textContent  = wsSold.toLocaleString()+" warrants";
+}
+ 
+function getDefaultBasis(sym, acctLabel){
+  if(!acctLabel) return "0";
+  const {owner, account} = parseAcctLabel(acctLabel);
+  const pos = BASE.find(p=>p.owner===owner && p.account===account && p.symbol===sym);
+  return pos && pos.avgBasis!=null ? pos.avgBasis.toFixed(2) : "0";
+}
+ 
+function addTranche(){
+  const defaultAcct = ACCOUNT_OPTIONS[0];
+  const defaultSym  = "GME";
+  const defaultBasis = getDefaultBasis(defaultSym, defaultAcct);
+  tranches.push({
+    date: new Date().toLocaleDateString("en-US"),
+    acct: defaultAcct,
+    sym:  defaultSym,
+    qty:  0,
+    price: getGME().toFixed(2),
+    basis: defaultBasis
   });
-  const rv=document.getElementById("realized-total");rv.textContent=fmt(tp);rv.className="realized-val "+(tp>=0?"pos":"neg");
+  saveTranches();
+  renderAll();
 }
-
-function addSaleRow(){
-  sales.push({date:new Date().toLocaleDateString("en-US"),acct:"Eric — Cash Account",sym:"GME",qty:0,price:getGME().toFixed(2),basis:"24.22"});
-  saveSales();renderSales();
+ 
+function onPriceChange(){
+  const now = new Date();
+  document.getElementById("last-updated").textContent =
+    "last updated "+now.toLocaleDateString("en-US",{month:"short",day:"numeric"})+" at "+now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("sl-gme").value = Math.min(500,Math.max(10,Math.round(getGME())));
+  document.getElementById("sl-ws").value  = Math.min(200,Math.max(0,getWS()));
+  renderAll();
 }
-function renderAll(){renderTopLine();renderAccounts();renderScenario();renderSales();}
+ 
+function renderAll(){
+  renderTopLine();
+  renderMilestones();
+  renderAccounts();
+  renderScenario();
+  renderTranches();
+}
+ 
 renderAll();
-renderScenario();
 </script>
 </body>
 </html>
